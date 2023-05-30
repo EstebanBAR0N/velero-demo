@@ -1,0 +1,3 @@
+.vscode
+velero/credentials-velero
+app/nginx-demo.yaml
