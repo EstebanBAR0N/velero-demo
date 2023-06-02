@@ -10,7 +10,10 @@ Velero is a powerful open-source tool that facilitates the backup, migration and
 - Docker Compose: https://docs.docker.com/compose/install/
 - Velero CLI: https://velero.io/docs/v1.6/basic-install/
 
-## Example 1 : Backup and Restore
+## Example 1 : Selective Backup and Restore
+
+In this example, we'll back up and restore part of our cluster using Velero.  
+First, we'll create a backup from a selector. Next, we'll simulate a disaster (deletion of our namespace). And finally, we'll restore it.
 
 ### Setup k3d cluster
 
@@ -113,6 +116,54 @@ velero restore create --from-backup nginx-backup
 velero restore get
 
 velero restore describe nginx-backup-xxxx # it should be completed
+
+# You can now check your nginx app
+
+kubectl get all -n nginx-example
+
+```
+
+## Example 2 : Cluster migration
+
+Migration from one cluster to another with Velero is simple. Simply connect Velero to your second cluster and clone the first cluster from your backup created earlier. 
+
+### Setup the 2nd k3d cluster
+
+```bash
+
+k3d cluster create velero-demo-2
+
+```
+
+### Setup Velero on the 2nd cluster
+
+```bash
+
+# get your ip address
+
+ip a
+
+# Install Velero
+
+velero install \
+    --provider aws \
+    --plugins velero/velero-plugin-for-aws:v1.1.0 \
+    --bucket velero \
+    --secret-file velero/credentials-velero \
+    --use-volume-snapshots=false \
+    --backup-location-config region=minio,s3ForcePathStyle="true",s3Url=http://<your-ip-address>:9000 # replace <your-ip-address> with your ip address
+
+# check logs
+
+kubectl logs deployment/velero -n velero
+
+```
+
+### Clone 1st cluster from Velero backup
+
+```bash
+
+velero restore create --from-backup nginx-backup
 
 # You can now check your nginx app
 
