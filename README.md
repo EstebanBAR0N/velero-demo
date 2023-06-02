@@ -243,3 +243,12 @@ cd gitops-demo/frontend/containers/helm
 helm install word-api ./chart -f ../../../../velero-demo-gitops/front-values.yaml
 cd -
 ```
+
+## Backup
+
+```bash
+velero backup create gitops --default-volumes-to-fs-backup
+velero backup logs test
+helm uninstall postgres
+velero restore create --from-backup gitops
+```
