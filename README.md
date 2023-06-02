@@ -10,7 +10,7 @@ Velero is a powerful open-source tool that facilitates the backup, migration and
 - Docker Compose: https://docs.docker.com/compose/install/
 - Velero CLI: https://velero.io/docs/v1.6/basic-install/
 
-## Example 1 : Selective Backup and Restore
+## Example 1 : Backup and Restore
 
 In this example, we'll back up and restore part of our cluster using Velero.  
 First, we'll create a backup from a selector. Next, we'll simulate a disaster (deletion of our namespace). And finally, we'll restore it.
@@ -87,7 +87,7 @@ kubectl get all -n nginx-example
 
 # Create a backup for nginx app
 
-velero backup create nginx-backup --selector app=nginx
+velero backup create nginx-backup
 
 # Verify the backup
 
@@ -123,7 +123,39 @@ kubectl get all -n nginx-example
 
 ```
 
-## Example 2 : Cluster migration
+## Example 2 : Selective Backup and Restore
+
+With the selective backup and restore feature, we have the ability to choose and backup a specific part of the cluster.
+
+The only part that undergoes a change is the backup process.
+
+### Backup
+
+```bash
+
+# Create a backup for nginx app
+
+velero backup create nginx-backup-2 --selector app=nginx
+
+# Verify the backup
+
+velero backup describe nginx-backup-2 # it should be completed
+
+# in case of failure, check the logs
+
+velero backup logs nginx-backup-2
+
+```
+
+> For more information on the command
+
+```bash
+
+velero backup create -h
+
+```
+
+## Example 3 : Cluster migration
 
 Migration from one cluster to another with Velero is simple. Simply connect Velero to your second cluster and clone the first cluster from your backup created earlier. 
 
