@@ -157,7 +157,7 @@ velero backup create -h
 
 ## Example 3 : Cluster migration
 
-Migration from one cluster to another with Velero is simple. Simply connect Velero to your second cluster and clone the first cluster from your backup created earlier. 
+Migration from one cluster to another with Velero is simple. Simply connect Velero to your second cluster and clone the first cluster from your backup created earlier.
 
 ### Setup the 2nd k3d cluster
 
@@ -201,4 +201,45 @@ velero restore create --from-backup nginx-backup
 
 kubectl get all -n nginx-example
 
+```
+
+# Test with a full project
+
+In order to test with a full project we will use the project from the following repository:
+https://github.com/Roxxas96/gitops-demo
+
+## Clone the project
+
+first you can clone the project:
+
+```bash
+git@github.com:Roxxas96/gitops-demo.git
+```
+
+## Setup
+
+For the setup you can do it the same way than in previous example.
+So you just need to create a cluster and install velero on it.
+You will also need to setup minio and create a bucket for velero.
+
+## Deploy the app
+
+```bash
+
+cd gitops-demo/infrastructure/helm/postgresql
+helm install postgres ./chart -f ../../../../velero-demo-gitops/postgres-values.yaml
+cd -
+```
+
+```bash
+
+cd gitops-demo/word-service/containers/helm
+helm install word-api ./chart -f ../../../../velero-demo-gitops/back-values.yaml
+cd -
+```
+
+```bash
+cd gitops-demo/frontend/containers/helm
+helm install word-api ./chart -f ../../../../velero-demo-gitops/front-values.yaml
+cd -
 ```
