@@ -240,7 +240,7 @@ cd -
 
 ```bash
 cd gitops-demo/frontend/containers/helm
-helm install word-api ./chart -f ../../../../velero-demo-gitops/front-values.yaml
+helm install word-front ./chart -f ../../../../velero-demo-gitops/front-values.yaml
 cd -
 ```
 
